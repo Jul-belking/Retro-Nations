@@ -1,0 +1,12 @@
+/* Estilos de la app que el design system no cubre. */
+
+/* Tarjetas interactivas del catálogo: lift + sombra al pasar el mouse */
+.rn-hover-card {
+  transition: transform var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.rn-hover-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
