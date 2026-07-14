@@ -1,4 +1,4 @@
-// Checkout como invitado: nombre, email y dirección + pago Wompi sandbox.
+// Checkout como invitado: nombre, email y dirección + pago.
 // Mantiene los datos y la reserva si el pago es rechazado; si la reserva
 // expiró (30 min), muestra el aviso y bloquea el formulario.
 
@@ -16,7 +16,6 @@ interface CheckoutProps {
   onFormChange: (patch: Partial<Buyer>) => void;
   onPay: () => void;
   onRetry: () => void;
-  onSimulateReject: () => void;
   onBackToDetail: () => void;
 }
 
@@ -29,7 +28,6 @@ export function Checkout({
   onFormChange,
   onPay,
   onRetry,
-  onSimulateReject,
   onBackToDetail,
 }: CheckoutProps) {
   const reservationExpired = !reservation;
@@ -95,8 +93,8 @@ export function Checkout({
                 onChange={(e) => onFormChange({ direccion: e.target.value })}
               />
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-muted)', margin: 0 }}>
-                Solo pedimos estos datos para procesar tu pedido. Wompi gestiona el pago directamente — no recibimos
-                ni guardamos datos de tu tarjeta.
+                Solo usamos estos datos para procesar y enviar tu pedido. El pago se gestiona de forma segura —
+                no almacenamos los datos de tu tarjeta.
               </p>
 
               {paymentError && (
@@ -107,23 +105,9 @@ export function Checkout({
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
                 {!paymentError ? (
-                  <>
-                    <Button variant="primary" size="lg" disabled={!canPay} onClick={onPay}>
-                      {paying ? 'Procesando…' : 'Pagar con Wompi (sandbox)'}
-                    </Button>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-body)',
-                        fontSize: 12,
-                        color: 'var(--color-text-muted)',
-                        cursor: 'pointer',
-                        textDecoration: 'underline',
-                      }}
-                      onClick={onSimulateReject}
-                    >
-                      Simular pago rechazado (demo)
-                    </span>
-                  </>
+                  <Button variant="primary" size="lg" disabled={!canPay} onClick={onPay}>
+                    {paying ? 'Procesando…' : 'Pagar ahora'}
+                  </Button>
                 ) : (
                   <Button variant="primary" size="lg" disabled={paying} onClick={onRetry}>
                     {paying ? 'Procesando…' : 'Reintentar pago'}
@@ -194,7 +178,7 @@ export function Checkout({
                 Reserva activa: {formatCountdown(reservation.expiresAt - now)} restantes
               </p>
             )}
-            <Badge variant="warning">Wompi · modo sandbox</Badge>
+            <Badge variant="success">Pago seguro</Badge>
           </div>
         </div>
       </div>

@@ -1,8 +1,8 @@
 // Capa de datos de Retro Nations.
 //
 // Dos implementaciones detrás de la misma interfaz:
-//  - LocalDemoStore: funciona hoy sin cuentas externas. Stock dummy con
-//    persistencia en localStorage. Es el modo por defecto.
+//  - LocalDemoStore: funciona hoy sin cuentas externas. Stock de
+//    demostración con persistencia en localStorage. Es el modo por defecto.
 //  - SupabaseStore: se activa automáticamente cuando existen
 //    VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en el .env. Usa las
 //    funciones RPC de supabase/schema.sql, donde la reserva y el descuento

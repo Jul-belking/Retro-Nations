@@ -1,6 +1,6 @@
-// Catálogo dummy de la v1: 20 selecciones × 2 equipaciones × 4 tallas.
-// El stock inicial se genera con el mismo hash determinístico del prototipo
-// de diseño, para que las cifras coincidan con lo que Julian aprobó.
+// Catálogo: 20 selecciones × 2 equipaciones × 4 tallas.
+// El stock inicial se genera con un hash determinístico, para que las
+// cifras coincidan con lo que Julian aprobó en el prototipo de diseño.
 
 export type KitId = 'local' | 'visitante';
 
@@ -49,6 +49,35 @@ export const TEAMS: Team[] = TEAM_NAMES.map((t, i) => ({
   era: ERAS[i % 3],
   price: 45,
 }));
+
+// Agrupación por continente para la navegación de la pestaña "País".
+// El orden es el pedido por el negocio; los continentes sin selecciones
+// todavía se muestran como "Próximamente".
+export interface Continent {
+  id: string;
+  name: string;
+  teamIds: string[];
+}
+
+export const CONTINENTS: Continent[] = [
+  { id: 'suramerica', name: 'Suramérica', teamIds: ['ar', 'br', 'co', 'uy'] },
+  { id: 'centroamerica', name: 'Centroamérica', teamIds: [] },
+  { id: 'norteamerica', name: 'Norteamérica', teamIds: ['us', 'mx'] },
+  { id: 'europa', name: 'Europa', teamIds: ['de', 'be', 'hr', 'es', 'fr', 'en', 'it', 'nl', 'pt', 'se'] },
+  { id: 'africa', name: 'África', teamIds: ['cm', 'ng'] },
+  { id: 'asia', name: 'Asia', teamIds: ['jp', 'kr'] },
+  { id: 'oceania', name: 'Oceanía', teamIds: [] },
+];
+
+/** Selecciones de un continente, ordenadas alfabéticamente (español). */
+export function teamsByContinent(continentId: string): Team[] {
+  const continent = CONTINENTS.find((c) => c.id === continentId);
+  if (!continent) return [];
+  return continent.teamIds
+    .map((id) => TEAMS.find((t) => t.id === id))
+    .filter((t): t is Team => !!t)
+    .sort((a, b) => a.name.localeCompare(b.name, 'es'));
+}
 
 export const RESERVATION_MS = 30 * 60 * 1000;
 

@@ -196,7 +196,7 @@ export function Detail({
             Comprar ahora
           </Button>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-muted)', margin: 0 }}>
-            Pago procesado con Wompi en modo pruebas (sandbox) — no se realizan cargos reales.
+            Pago 100% seguro. No almacenamos los datos de tu tarjeta.
           </p>
         </div>
       </div>

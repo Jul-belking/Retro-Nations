@@ -1,25 +1,31 @@
-// Retro Nations — flujo completo de la v1:
-// catálogo → detalle (reserva de talla, 30 min) → checkout invitado →
-// pago Wompi sandbox → descuento de stock → confirmación de pedido.
+// Retro Nations — app principal.
+// Navegación por pestañas: Inicio · País · Usuario.
+// El flujo de compra vive dentro de "País": continentes → selecciones →
+// detalle (reserva de talla 30 min) → checkout → confirmación.
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { TEAMS, type KitId, type Size } from './lib/catalog';
+import { TEAMS, CONTINENTS, teamsByContinent, type KitId, type Size } from './lib/catalog';
 import { createStore, type Buyer, type Order, type Reservation } from './lib/store';
-import { processSandboxPayment } from './lib/payment';
-import { Badge } from './components/ui';
+import { processPayment } from './lib/payment';
+import { Inicio } from './screens/Inicio';
+import { Continents } from './screens/Continents';
 import { Catalog } from './screens/Catalog';
 import { Detail } from './screens/Detail';
 import { Checkout } from './screens/Checkout';
 import { Confirm } from './screens/Confirm';
+import { Usuario } from './screens/Usuario';
 
-type Screen = 'catalog' | 'detail' | 'checkout' | 'confirm';
+type Tab = 'inicio' | 'pais' | 'usuario';
+type PaisView = 'continents' | 'catalog' | 'detail' | 'checkout' | 'confirm';
 
 const EMPTY_FORM: Buyer = { nombre: '', email: '', direccion: '' };
 
 export default function App() {
   const store = useMemo(() => createStore(), []);
 
-  const [screen, setScreen] = useState<Screen>('catalog');
+  const [tab, setTab] = useState<Tab>('inicio');
+  const [paisView, setPaisView] = useState<PaisView>('continents');
+  const [continentId, setContinentId] = useState<string | null>(null);
   const [teamId, setTeamId] = useState<string | null>(null);
   const [detailKit, setDetailKit] = useState<KitId>('local');
   const [stock, setStock] = useState<Record<string, number>>({});
@@ -30,6 +36,7 @@ export default function App() {
   const [order, setOrder] = useState<Order | null>(null);
   const [sizeNotice, setSizeNotice] = useState<string | null>(null);
   const [now, setNow] = useState(() => Date.now());
+  const [logoOk, setLogoOk] = useState(true);
 
   const reservationRef = useRef<Reservation | null>(null);
   reservationRef.current = reservation;
@@ -38,7 +45,6 @@ export default function App() {
     setStock(await store.getStock());
   }, [store]);
 
-  // Carga inicial: stock + reserva vigente de este navegador (si la hay).
   useEffect(() => {
     void (async () => {
       setStock(await store.getStock());
@@ -47,7 +53,6 @@ export default function App() {
     })();
   }, [store]);
 
-  // Tick por segundo: cuenta regresiva y expiración automática de reserva.
   useEffect(() => {
     const interval = setInterval(() => {
       const current = Date.now();
@@ -72,32 +77,71 @@ export default function App() {
     }
   }, [store, refreshStock]);
 
-  /* ---------- Navegación ---------- */
-
-  const goCatalog = useCallback(() => {
-    void releaseCurrentReservation();
-    setScreen('catalog');
+  const resetPurchase = useCallback(() => {
     setTeamId(null);
     setPaymentError(false);
     setOrder(null);
     setSizeNotice(null);
     setForm(EMPTY_FORM);
-  }, [releaseCurrentReservation]);
+  }, []);
+
+  /* ---------- Navegación de pestañas ---------- */
+
+  const goInicio = useCallback(() => {
+    void releaseCurrentReservation();
+    setTab('inicio');
+    resetPurchase();
+  }, [releaseCurrentReservation, resetPurchase]);
+
+  const goPais = useCallback(() => {
+    void releaseCurrentReservation();
+    setTab('pais');
+    setPaisView('continents');
+    setContinentId(null);
+    resetPurchase();
+  }, [releaseCurrentReservation, resetPurchase]);
+
+  const goUsuario = useCallback(() => {
+    void releaseCurrentReservation();
+    setTab('usuario');
+    resetPurchase();
+  }, [releaseCurrentReservation, resetPurchase]);
+
+  /* ---------- Navegación dentro de País ---------- */
+
+  const selectContinent = useCallback((id: string) => {
+    setContinentId(id);
+    setPaisView('catalog');
+  }, []);
+
+  const backToContinents = useCallback(() => {
+    void releaseCurrentReservation();
+    setPaisView('continents');
+    setContinentId(null);
+    resetPurchase();
+  }, [releaseCurrentReservation, resetPurchase]);
+
+  const backToCatalog = useCallback(() => {
+    void releaseCurrentReservation();
+    setPaisView('catalog');
+    resetPurchase();
+  }, [releaseCurrentReservation, resetPurchase]);
 
   const goDetail = useCallback((id: string, kit?: KitId) => {
-    setScreen('detail');
+    setTab('pais');
+    setPaisView('detail');
     setTeamId(id);
     setDetailKit(kit ?? 'local');
     setSizeNotice(null);
   }, []);
 
   const goDetailFromCheckout = useCallback(() => {
-    setScreen('detail');
+    setPaisView('detail');
     setPaymentError(false);
   }, []);
 
   const goCheckout = useCallback(() => {
-    if (reservationRef.current) setScreen('checkout');
+    if (reservationRef.current) setPaisView('checkout');
   }, []);
 
   /* ---------- Detalle: equipación y talla ---------- */
@@ -113,14 +157,13 @@ export default function App() {
       if (!team) return;
       const current = reservationRef.current;
       if (current && current.teamId === team.id && current.kit === detailKit && current.size === size) {
-        return; // ya reservada
+        return;
       }
       setSizeNotice(null);
       const result = await store.reserve(team.id, detailKit, size);
       if (result.ok) {
         setReservation(result.reservation);
       } else {
-        // Otro comprador tomó la última unidad entre el render y el clic.
         setReservation(null);
         setSizeNotice('Alguien más acaba de reservar esa talla. Elige otra disponible.');
       }
@@ -140,7 +183,7 @@ export default function App() {
       }
       setPaying(true);
       setPaymentError(false);
-      const payment = await processSandboxPayment({ amount: r.price, forceFail });
+      const payment = await processPayment({ amount: r.price, forceFail });
       if (!payment.approved) {
         setPaying(false);
         setPaymentError(true);
@@ -152,10 +195,9 @@ export default function App() {
         setOrder(result.order);
         setReservation(null);
         setPaymentError(false);
-        setScreen('confirm');
+        setPaisView('confirm');
         await refreshStock();
       } else {
-        // La reserva expiró justo durante el pago.
         setReservation(null);
         await refreshStock();
       }
@@ -163,7 +205,7 @@ export default function App() {
     [store, form, refreshStock],
   );
 
-  /* ---------- Layout del catálogo (prop de diseño: list | grid) ---------- */
+  /* ---------- Layout del catálogo (list | grid) ---------- */
 
   const catalogLayout = useMemo<'list' | 'grid'>(() => {
     const params = new URLSearchParams(window.location.search);
@@ -171,6 +213,14 @@ export default function App() {
   }, []);
 
   const team = TEAMS.find((t) => t.id === teamId) ?? null;
+  const continent = CONTINENTS.find((c) => c.id === continentId) ?? null;
+  const continentTeams = continentId ? teamsByContinent(continentId) : [];
+
+  const tabItem = (id: Tab, label: string, onClick: () => void) => (
+    <button className={`rn-tab ${tab === id ? 'rn-tab--active' : ''}`} onClick={onClick}>
+      {label}
+    </button>
+  );
 
   return (
     <div
@@ -193,53 +243,55 @@ export default function App() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '16px 32px',
+          padding: '14px 32px',
+          gap: 16,
+          flexWrap: 'wrap',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, cursor: 'pointer' }} onClick={goCatalog}>
-          <span
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 26,
-              letterSpacing: 'var(--tracking-wide)',
-              color: 'var(--color-primary)',
-            }}
-          >
-            RETRO
-          </span>
-          <span
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 26,
-              letterSpacing: 'var(--tracking-wide)',
-              color: 'var(--color-text-primary)',
-            }}
-          >
-            NATIONS
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }} onClick={goInicio}>
+          {logoOk && (
+            <img
+              src="/images/logo-retro-nations.png"
+              alt="Retro Nations"
+              onError={() => setLogoOk(false)}
+              style={{ height: 44, width: 'auto', display: 'block' }}
+            />
+          )}
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 26, letterSpacing: 'var(--tracking-wide)', color: 'var(--color-primary)' }}>
+              RETRO
+            </span>
+            <span style={{ fontFamily: 'var(--font-display)', fontSize: 26, letterSpacing: 'var(--tracking-wide)', color: 'var(--color-text-primary)' }}>
+              NATIONS
+            </span>
+          </div>
         </div>
-        <nav style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
-          <span
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: 13,
-              letterSpacing: 'var(--tracking-wide)',
-              textTransform: 'uppercase',
-              cursor: 'pointer',
-              color: 'var(--color-text-secondary)',
-            }}
-            onClick={goCatalog}
-          >
-            Catálogo
-          </span>
-          <Badge variant="neutral">Catálogo dummy</Badge>
+        <nav style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          {tabItem('inicio', 'Inicio', goInicio)}
+          {tabItem('pais', 'País', goPais)}
+          {tabItem('usuario', 'Usuario', goUsuario)}
         </nav>
       </header>
 
-      {/* Pantallas */}
-      {screen === 'catalog' && <Catalog stock={stock} layout={catalogLayout} onOpenDetail={goDetail} />}
+      {/* Pestañas */}
+      {tab === 'inicio' && <Inicio onGoPais={goPais} />}
 
-      {screen === 'detail' && team && (
+      {tab === 'usuario' && <Usuario />}
+
+      {tab === 'pais' && paisView === 'continents' && <Continents onSelectContinent={selectContinent} />}
+
+      {tab === 'pais' && paisView === 'catalog' && continent && (
+        <Catalog
+          teams={continentTeams}
+          continentName={continent.name}
+          stock={stock}
+          layout={catalogLayout}
+          onOpenDetail={goDetail}
+          onBack={backToContinents}
+        />
+      )}
+
+      {tab === 'pais' && paisView === 'detail' && team && (
         <Detail
           team={team}
           detailKit={detailKit}
@@ -250,11 +302,11 @@ export default function App() {
           onSelectKit={selectKit}
           onSelectSize={(size) => void selectSize(size)}
           onGoCheckout={goCheckout}
-          onGoCatalog={goCatalog}
+          onGoCatalog={backToCatalog}
         />
       )}
 
-      {screen === 'checkout' && (
+      {tab === 'pais' && paisView === 'checkout' && (
         <Checkout
           reservation={reservation}
           form={form}
@@ -264,12 +316,11 @@ export default function App() {
           onFormChange={(patch) => setForm((f) => ({ ...f, ...patch }))}
           onPay={() => void doPay(false)}
           onRetry={() => void doPay(false)}
-          onSimulateReject={() => void doPay(true)}
           onBackToDetail={goDetailFromCheckout}
         />
       )}
 
-      {screen === 'confirm' && order && <Confirm order={order} onGoCatalog={goCatalog} />}
+      {tab === 'pais' && paisView === 'confirm' && order && <Confirm order={order} onGoCatalog={goPais} />}
 
       {/* Footer */}
       <footer
@@ -281,8 +332,7 @@ export default function App() {
         }}
       >
         <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-muted)', margin: 0 }}>
-          Retro Nations — camisetas verificadas a mano, no dropshipping. Pagos en modo pruebas (Wompi sandbox) hasta
-          activar el inventario real.
+          Retro Nations — reproducciones de camisetas clásicas de selecciones, verificadas a mano. No dropshipping.
         </p>
       </footer>
     </div>

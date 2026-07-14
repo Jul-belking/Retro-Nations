@@ -1,17 +1,20 @@
-// Pantalla de catálogo: hero editorial + listado de selecciones.
-// Dos layouts según el diseño: 'list' (por defecto, filas expandibles con
-// las dos equipaciones) y 'grid' (tarjetas). Se cambia con ?layout=grid.
+// Listado de selecciones de un continente (pestaña País — nivel 2).
+// Dos layouts: 'list' (por defecto, filas expandibles con las dos
+// equipaciones) y 'grid' (tarjetas). Se cambia con ?layout=grid.
 
 import { useState } from 'react';
-import { KITS, SIZES, TEAMS, variantKey, type KitId, type Team } from '../lib/catalog';
+import { KITS, SIZES, variantKey, type KitId, type Team } from '../lib/catalog';
 import { Badge, Tag } from '../components/ui';
 import { Jersey } from '../components/Jersey';
 import { flagBackground } from '../lib/nations';
 
 interface CatalogProps {
+  teams: Team[];
+  continentName: string;
   stock: Record<string, number>;
   layout: 'list' | 'grid';
   onOpenDetail: (teamId: string, kit?: KitId) => void;
+  onBack: () => void;
 }
 
 function teamTotalStock(stock: Record<string, number>, team: Team): number {
@@ -31,69 +34,18 @@ function StockBadge({ total }: { total: number }) {
   return null;
 }
 
-export function Catalog({ stock, layout, onOpenDetail }: CatalogProps) {
+export function Catalog({ teams, continentName, stock, layout, onOpenDetail, onBack }: CatalogProps) {
   const [expandedTeam, setExpandedTeam] = useState<string | null>(null);
 
   return (
     <main style={{ flex: 1 }}>
-      {/* Hero */}
-      <section style={{ position: 'relative', height: 360, overflow: 'hidden' }}>
-        <img
-          src="/images/hero-stadium.jpg"
-          alt="Estadio de fútbol lleno antes del partido"
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'linear-gradient(180deg, rgba(48,46,43,.15), rgba(48,46,43,.75))',
-            pointerEvents: 'none',
-          }}
-        />
-        <div style={{ position: 'absolute', left: 0, bottom: 0, padding: '40px 32px', maxWidth: 640 }}>
-          <p
-            style={{
-              fontFamily: 'var(--font-heading)',
-              textTransform: 'uppercase',
-              letterSpacing: 'var(--tracking-widest)',
-              fontSize: 13,
-              color: 'var(--gold-400)',
-              margin: '0 0 8px',
-            }}
-          >
-            20 selecciones · 80s, 90s y 00s
-          </p>
-          <h1
-            style={{
-              fontFamily: 'var(--font-display)',
-              color: 'var(--cream-50)',
-              fontSize: 44,
-              lineHeight: 'var(--leading-tight)',
-              margin: '0 0 12px',
-              textTransform: 'uppercase',
-              fontWeight: 400,
-            }}
-          >
-            Camisetas que ya no se consiguen
-          </h1>
-          <p
-            style={{
-              fontFamily: 'var(--font-body)',
-              color: 'var(--cream-100)',
-              fontSize: 16,
-              lineHeight: 'var(--leading-relaxed)',
-              margin: 0,
-            }}
-          >
-            Cada equipación es verificada a mano antes de publicarse. Sin dropshipping, sin
-            sorpresas de talla.
-          </p>
-        </div>
-      </section>
-
-      {/* Listado */}
-      <section style={{ maxWidth: 1240, margin: '0 auto', padding: '48px 24px 80px' }}>
+      <section style={{ maxWidth: 1240, margin: '0 auto', padding: '40px 24px 80px' }}>
+        <p
+          style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-link)', cursor: 'pointer', margin: '0 0 20px' }}
+          onClick={onBack}
+        >
+          ← Volver a continentes
+        </p>
         <div
           style={{
             display: 'flex',
@@ -104,26 +56,26 @@ export function Catalog({ stock, layout, onOpenDetail }: CatalogProps) {
             gap: 8,
           }}
         >
-          <h2
+          <h1
             style={{
               fontFamily: 'var(--font-display)',
               textTransform: 'uppercase',
-              fontSize: 26,
+              fontSize: 28,
               margin: 0,
               color: 'var(--color-text-primary)',
               fontWeight: 400,
             }}
           >
-            Selecciones disponibles
-          </h2>
+            {continentName}
+          </h1>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--color-text-muted)', margin: 0 }}>
-            Catálogo con datos dummy — el inventario real llega con el primer envío del proveedor.
+            {teams.length} {teams.length === 1 ? 'selección' : 'selecciones'} · orden alfabético
           </p>
         </div>
 
         {layout === 'grid' ? (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(230px, 1fr))', gap: 24 }}>
-            {TEAMS.map((team) => {
+            {teams.map((team) => {
               const total = teamTotalStock(stock, team);
               return (
                 <div
@@ -198,7 +150,7 @@ export function Catalog({ stock, layout, onOpenDetail }: CatalogProps) {
               overflow: 'hidden',
             }}
           >
-            {TEAMS.map((team) => {
+            {teams.map((team) => {
               const total = teamTotalStock(stock, team);
               const expanded = expandedTeam === team.id;
               return (
