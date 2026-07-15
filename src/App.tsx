@@ -279,7 +279,7 @@ export default function App() {
               src="/images/logo-retro-nations.png"
               alt="Retro Nations"
               onError={() => setLogoOk(false)}
-              style={{ height: 64, width: 'auto', display: 'block' }}
+              style={{ height: 80, width: 'auto', display: 'block' }}
             />
           )}
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 8 }}>

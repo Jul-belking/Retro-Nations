@@ -1,5 +1,4 @@
 // Datos de contacto de la tienda que se muestran en el footer.
-// NOTA: revisar el correo — 'gamil.com.co' parece un typo de 'gmail.com'.
 
 export const SITE = {
   instagramHandle: '@retronations_co',
@@ -8,6 +7,6 @@ export const SITE = {
   facebookUrl: 'https://www.facebook.com/search/top?q=Retro%20Nations%20Colombia',
   whatsapp: '+57 317 590 4530',
   whatsappUrl: 'https://wa.me/573175904530',
-  email: 'retro_nations@gamil.com.co',
+  email: 'retro_nations@gmail.com',
   city: 'Neiva, Huila, Colombia',
 };
