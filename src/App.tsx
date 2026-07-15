@@ -376,22 +376,35 @@ export default function App() {
             <span style={{ fontFamily: 'var(--font-display)', fontSize: 20, letterSpacing: 'var(--tracking-wide)', color: 'var(--color-primary)' }}>RETRO</span>
             <span style={{ fontFamily: 'var(--font-display)', fontSize: 20, letterSpacing: 'var(--tracking-wide)', color: 'var(--color-text-primary)' }}>NATIONS</span>
           </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24, alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px 24px', alignItems: 'center' }}>
             <a
               href={SITE.instagramUrl}
               target="_blank"
               rel="noreferrer noopener"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--color-text-secondary)', textDecoration: 'none' }}
+              className="rn-footer-link"
             >
               <InstagramIcon /> {SITE.instagramHandle}
             </a>
             <a
-              href={`mailto:${SITE.email}`}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--color-text-secondary)', textDecoration: 'none' }}
+              href={SITE.facebookUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="rn-footer-link"
             >
+              <FacebookIcon /> {SITE.facebookName}
+            </a>
+            <a
+              href={SITE.whatsappUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="rn-footer-link"
+            >
+              <WhatsappIcon /> {SITE.whatsapp}
+            </a>
+            <a href={`mailto:${SITE.email}`} className="rn-footer-link">
               <MailIcon /> {SITE.email}
             </a>
-            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, fontFamily: 'var(--font-body)', fontSize: 14, color: 'var(--color-text-secondary)' }}>
+            <span className="rn-footer-link" style={{ cursor: 'default' }}>
               <PinIcon /> {SITE.city}
             </span>
           </div>
@@ -427,6 +440,22 @@ function PinIcon() {
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--color-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M12 21s-7-5.5-7-11a7 7 0 0114 0c0 5.5-7 11-7 11z" />
       <circle cx="12" cy="10" r="2.5" />
+    </svg>
+  );
+}
+
+function FacebookIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--color-primary)" aria-hidden="true">
+      <path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z" />
+    </svg>
+  );
+}
+
+function WhatsappIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--color-primary)" aria-hidden="true">
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 004.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.02A9.86 9.86 0 0012.04 2zm5.8 14.13c-.25.69-1.44 1.32-1.99 1.4-.53.08-1.17.11-1.89-.12-.44-.14-1-.32-1.72-.63-3.02-1.3-4.99-4.35-5.14-4.55-.15-.2-1.23-1.63-1.23-3.11s.78-2.21 1.05-2.51c.28-.3.6-.38.8-.38l.58.01c.18 0 .43-.07.68.52.25.6.85 2.08.92 2.23.08.15.13.32.02.52-.1.2-.15.32-.3.5-.15.17-.32.39-.46.52-.15.15-.31.31-.13.61.18.3.8 1.32 1.72 2.14 1.18 1.05 2.18 1.38 2.48 1.53.3.15.48.13.65-.08.18-.2.75-.87.95-1.17.2-.3.4-.25.68-.15.28.1 1.76.83 2.06.98.3.15.5.22.58.35.07.12.07.71-.18 1.4z" />
     </svg>
   );
 }
