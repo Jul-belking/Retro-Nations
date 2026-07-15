@@ -15,6 +15,7 @@ interface DetailProps {
   reservation: Reservation | null;
   now: number;
   sizeNotice: string | null;
+  isLoggedIn: boolean;
   onSelectKit: (kit: KitId) => void;
   onSelectSize: (size: Size) => void;
   onGoCheckout: () => void;
@@ -28,6 +29,7 @@ export function Detail({
   reservation,
   now,
   sizeNotice,
+  isLoggedIn,
   onSelectKit,
   onSelectSize,
   onGoCheckout,
@@ -193,10 +195,12 @@ export function Detail({
           )}
 
           <Button variant="primary" size="lg" disabled={!hasReservation} onClick={onGoCheckout}>
-            Comprar ahora
+            {isLoggedIn ? 'Comprar ahora' : 'Inicia sesión para comprar'}
           </Button>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-muted)', margin: 0 }}>
-            Pago 100% seguro. No almacenamos los datos de tu tarjeta.
+            {isLoggedIn
+              ? 'Pago 100% seguro. No almacenamos los datos de tu tarjeta.'
+              : 'Para completar la compra necesitas una cuenta. Reserva tu talla y te llevaremos a iniciar sesión.'}
           </p>
         </div>
       </div>

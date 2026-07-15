@@ -75,3 +75,9 @@ export function login(email: string, password: string): AuthResult {
 export function logout() {
   localStorage.removeItem(SESSION_KEY);
 }
+
+/** Dirección de envío completa en una línea, a partir de la cuenta. */
+export function fullAddress(user: PublicAccount): string {
+  const cityLine = [user.ciudad, user.codigoPostal].filter(Boolean).join(' ');
+  return [user.direccion, cityLine, user.pais].filter(Boolean).join(', ');
+}

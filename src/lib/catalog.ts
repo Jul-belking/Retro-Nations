@@ -22,8 +22,27 @@ export const KITS: { id: KitId; label: string }[] = [
 const ERAS = ['80s', '90s', '00s'];
 
 const TEAM_NAMES: { id: string; name: string }[] = [
+  // Suramérica
   { id: 'ar', name: 'Argentina' },
+  { id: 'bo', name: 'Bolivia' },
   { id: 'br', name: 'Brasil' },
+  { id: 'cl', name: 'Chile' },
+  { id: 'co', name: 'Colombia' },
+  { id: 'ec', name: 'Ecuador' },
+  { id: 'py', name: 'Paraguay' },
+  { id: 'pe', name: 'Perú' },
+  { id: 'uy', name: 'Uruguay' },
+  { id: 've', name: 'Venezuela' },
+  // Centroamérica
+  { id: 'mx', name: 'México' },
+  { id: 'cr', name: 'Costa Rica' },
+  { id: 'sv', name: 'El Salvador' },
+  { id: 'gt', name: 'Guatemala' },
+  { id: 'pa', name: 'Panamá' },
+  // Norteamérica
+  { id: 'us', name: 'Estados Unidos' },
+  { id: 'ca', name: 'Canadá' },
+  // Europa
   { id: 'de', name: 'Alemania' },
   { id: 'it', name: 'Italia' },
   { id: 'fr', name: 'Francia' },
@@ -31,17 +50,28 @@ const TEAM_NAMES: { id: string; name: string }[] = [
   { id: 'en', name: 'Inglaterra' },
   { id: 'nl', name: 'Países Bajos' },
   { id: 'pt', name: 'Portugal' },
-  { id: 'uy', name: 'Uruguay' },
-  { id: 'co', name: 'Colombia' },
-  { id: 'mx', name: 'México' },
   { id: 'hr', name: 'Croacia' },
   { id: 'be', name: 'Bélgica' },
   { id: 'se', name: 'Suecia' },
+  // África
   { id: 'cm', name: 'Camerún' },
   { id: 'ng', name: 'Nigeria' },
+  { id: 'eg', name: 'Egipto' },
+  { id: 'ma', name: 'Marruecos' },
+  { id: 'za', name: 'Sudáfrica' },
+  { id: 'sn', name: 'Senegal' },
+  { id: 'dz', name: 'Argelia' },
+  { id: 'gh', name: 'Ghana' },
+  // Asia
   { id: 'jp', name: 'Japón' },
   { id: 'kr', name: 'Corea del Sur' },
-  { id: 'us', name: 'Estados Unidos' },
+  { id: 'ir', name: 'Irán' },
+  { id: 'qa', name: 'Qatar' },
+  { id: 'cn', name: 'China' },
+  { id: 'jo', name: 'Jordania' },
+  // Oceanía
+  { id: 'nz', name: 'Nueva Zelanda' },
+  { id: 'au', name: 'Australia' },
 ];
 
 export const TEAMS: Team[] = TEAM_NAMES.map((t, i) => ({
@@ -60,13 +90,13 @@ export interface Continent {
 }
 
 export const CONTINENTS: Continent[] = [
-  { id: 'suramerica', name: 'Suramérica', teamIds: ['ar', 'br', 'co', 'uy'] },
-  { id: 'centroamerica', name: 'Centroamérica', teamIds: [] },
-  { id: 'norteamerica', name: 'Norteamérica', teamIds: ['us', 'mx'] },
+  { id: 'suramerica', name: 'Suramérica', teamIds: ['ar', 'bo', 'br', 'cl', 'co', 'ec', 'py', 'pe', 'uy', 've'] },
+  { id: 'centroamerica', name: 'Centroamérica', teamIds: ['mx', 'cr', 'sv', 'gt', 'pa'] },
+  { id: 'norteamerica', name: 'Norteamérica', teamIds: ['us', 'ca'] },
   { id: 'europa', name: 'Europa', teamIds: ['de', 'be', 'hr', 'es', 'fr', 'en', 'it', 'nl', 'pt', 'se'] },
-  { id: 'africa', name: 'África', teamIds: ['cm', 'ng'] },
-  { id: 'asia', name: 'Asia', teamIds: ['jp', 'kr'] },
-  { id: 'oceania', name: 'Oceanía', teamIds: [] },
+  { id: 'africa', name: 'África', teamIds: ['cm', 'ng', 'eg', 'ma', 'za', 'sn', 'dz', 'gh'] },
+  { id: 'asia', name: 'Asia', teamIds: ['jp', 'kr', 'ir', 'qa', 'cn', 'jo'] },
+  { id: 'oceania', name: 'Oceanía', teamIds: ['nz', 'au'] },
 ];
 
 /** Selecciones de un continente, ordenadas alfabéticamente (español). */

@@ -1,19 +1,18 @@
 // Pestaña Usuario: iniciar sesión / crear cuenta (modo demo, local).
-// Inspirado en el registro de una tienda estándar: datos de contacto y
-// envío completos. Al iniciar sesión se muestra el perfil.
+// El estado de sesión lo controla App (para que la compra pueda exigir
+// login). Aquí solo se muestran los formularios o el perfil.
 
 import { useState, type FormEvent } from 'react';
-import {
-  currentUser,
-  login,
-  logout,
-  register,
-  type Account,
-  type PublicAccount,
-} from '../lib/account';
+import { login, logout, register, type Account, type PublicAccount } from '../lib/account';
 import { Button, Input, Toast } from '../components/ui';
 
 type Mode = 'login' | 'register';
+
+interface UsuarioProps {
+  user: PublicAccount | null;
+  onAuthChange: (user: PublicAccount | null) => void;
+  notice?: string | null;
+}
 
 const EMPTY: Account = {
   nombre: '',
@@ -54,8 +53,7 @@ function ProfileRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function Usuario() {
-  const [user, setUser] = useState<PublicAccount | null>(() => currentUser());
+export function Usuario({ user, onAuthChange, notice }: UsuarioProps) {
   const [mode, setMode] = useState<Mode>('login');
   const [form, setForm] = useState<Account>(EMPTY);
   const [error, setError] = useState<string | null>(null);
@@ -69,9 +67,9 @@ export function Usuario() {
     e.preventDefault();
     const result = mode === 'login' ? login(form.email, form.password) : register(form);
     if (result.ok) {
-      setUser(result.user);
       setForm(EMPTY);
       setError(null);
+      onAuthChange(result.user);
     } else {
       setError(result.error);
     }
@@ -79,8 +77,8 @@ export function Usuario() {
 
   const onLogout = () => {
     logout();
-    setUser(null);
     setMode('login');
+    onAuthChange(null);
   };
 
   /* ---------- Perfil (sesión iniciada) ---------- */
@@ -113,11 +111,19 @@ export function Usuario() {
   return (
     <main style={{ flex: 1, maxWidth: 560, margin: '0 auto', padding: '48px 24px 80px', width: '100%', boxSizing: 'border-box' }}>
       {heading(mode === 'login' ? 'Iniciar sesión' : 'Crear cuenta')}
-      <p style={{ fontFamily: 'var(--font-body)', fontSize: 15, color: 'var(--color-text-secondary)', margin: '0 0 24px' }}>
+      <p style={{ fontFamily: 'var(--font-body)', fontSize: 15, color: 'var(--color-text-secondary)', margin: '0 0 20px' }}>
         {mode === 'login'
           ? 'Accede con tu correo y contraseña.'
           : 'Regístrate para agilizar tus compras y guardar tus datos de envío.'}
       </p>
+
+      {notice && (
+        <div style={{ marginBottom: 20 }}>
+          <Toast variant="warning" title="Necesitas una cuenta">
+            {notice}
+          </Toast>
+        </div>
+      )}
 
       {/* Conmutador */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 24 }}>

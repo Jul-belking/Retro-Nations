@@ -122,6 +122,127 @@ export const NATIONS: Record<string, NationVisual> = {
     home: { body: '#FFFFFF', accent: '#1B2A6B', pattern: 'sash', patternColor: '#B22234' },
     away: { body: '#1B2A6B', accent: '#FFFFFF', pattern: 'solid' },
   },
+  // Suramérica
+  bo: {
+    flag: ['#DA291C', '#F9E300', '#007A33'],
+    home: { body: '#007A33', accent: '#F9E300', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#DA291C', pattern: 'solid' },
+  },
+  cl: {
+    flag: ['#0032A0', '#FFFFFF', '#DA291C'],
+    home: { body: '#D52B1E', accent: '#FFFFFF', pattern: 'solid' },
+    away: { body: '#0032A0', accent: '#FFFFFF', pattern: 'solid' },
+  },
+  ec: {
+    flag: ['#FFD100', '#0072CE', '#EF3340'],
+    home: { body: '#FFD100', accent: '#0072CE', pattern: 'solid' },
+    away: { body: '#0A2A6B', accent: '#FFD100', pattern: 'solid' },
+  },
+  py: {
+    flag: ['#D52B1E', '#FFFFFF', '#0038A8'],
+    home: { body: '#FFFFFF', accent: '#D52B1E', pattern: 'stripes', patternColor: '#D52B1E' },
+    away: { body: '#1A3A8F', accent: '#FFFFFF', pattern: 'solid' },
+  },
+  pe: {
+    flag: ['#D91023', '#FFFFFF', '#D91023'],
+    home: { body: '#FFFFFF', accent: '#D91023', pattern: 'sash', patternColor: '#D91023' },
+    away: { body: '#D91023', accent: '#FFFFFF', pattern: 'solid' },
+  },
+  ve: {
+    flag: ['#FFD100', '#00247D', '#CF142B'],
+    home: { body: '#6E1423', accent: '#FFFFFF', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#6E1423', pattern: 'solid' },
+  },
+  // Centroamérica
+  cr: {
+    flag: ['#002B7F', '#FFFFFF', '#CE1126'],
+    home: { body: '#CE1126', accent: '#002B7F', pattern: 'solid' },
+    away: { body: '#002B7F', accent: '#FFFFFF', pattern: 'solid' },
+  },
+  sv: {
+    flag: ['#0F47AF', '#FFFFFF', '#0F47AF'],
+    home: { body: '#0F47AF', accent: '#FFFFFF', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#0F47AF', pattern: 'solid' },
+  },
+  gt: {
+    flag: ['#4997D0', '#FFFFFF', '#4997D0'],
+    home: { body: '#3D82C4', accent: '#FFFFFF', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#3D82C4', pattern: 'solid' },
+  },
+  pa: {
+    flag: ['#D21034', '#FFFFFF', '#005293'],
+    home: { body: '#D21034', accent: '#005293', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#D21034', pattern: 'solid' },
+  },
+  // Norteamérica
+  ca: {
+    flag: ['#FF0000', '#FFFFFF', '#FF0000'],
+    home: { body: '#D80621', accent: '#FFFFFF', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#D80621', pattern: 'solid' },
+  },
+  // África
+  eg: {
+    flag: ['#CE1126', '#FFFFFF', '#000000'],
+    home: { body: '#CE1126', accent: '#FFFFFF', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#CE1126', pattern: 'solid' },
+  },
+  ma: {
+    flag: ['#C1272D', '#006233', '#C1272D'],
+    home: { body: '#C1272D', accent: '#006233', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#C1272D', pattern: 'solid' },
+  },
+  za: {
+    flag: ['#007749', '#FFB915', '#001489'],
+    home: { body: '#007749', accent: '#FFB915', pattern: 'solid' },
+    away: { body: '#FFB915', accent: '#007749', pattern: 'solid' },
+  },
+  sn: {
+    flag: ['#00853F', '#FDEF42', '#E31B23'],
+    home: { body: '#FFFFFF', accent: '#00853F', pattern: 'solid' },
+    away: { body: '#00853F', accent: '#FDEF42', pattern: 'solid' },
+  },
+  dz: {
+    flag: ['#006233', '#FFFFFF', '#D21034'],
+    home: { body: '#FFFFFF', accent: '#006233', pattern: 'solid' },
+    away: { body: '#006233', accent: '#FFFFFF', pattern: 'solid' },
+  },
+  gh: {
+    flag: ['#CE1126', '#FCD116', '#006B3F'],
+    home: { body: '#FFFFFF', accent: '#CE1126', pattern: 'solid' },
+    away: { body: '#111111', accent: '#FCD116', pattern: 'solid' },
+  },
+  // Asia
+  ir: {
+    flag: ['#239F40', '#FFFFFF', '#DA0000'],
+    home: { body: '#FFFFFF', accent: '#239F40', pattern: 'solid' },
+    away: { body: '#D7141A', accent: '#FFFFFF', pattern: 'solid' },
+  },
+  qa: {
+    flag: ['#8A1538', '#FFFFFF', '#8A1538'],
+    home: { body: '#8A1538', accent: '#FFFFFF', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#8A1538', pattern: 'solid' },
+  },
+  cn: {
+    flag: ['#DE2910', '#FFDE00', '#DE2910'],
+    home: { body: '#DE2910', accent: '#FFDE00', pattern: 'solid' },
+    away: { body: '#FFFFFF', accent: '#DE2910', pattern: 'solid' },
+  },
+  jo: {
+    flag: ['#000000', '#FFFFFF', '#007A3D'],
+    home: { body: '#FFFFFF', accent: '#CE1126', pattern: 'solid' },
+    away: { body: '#007A3D', accent: '#FFFFFF', pattern: 'solid' },
+  },
+  // Oceanía
+  nz: {
+    flag: ['#00247D', '#CC142B', '#FFFFFF'],
+    home: { body: '#FFFFFF', accent: '#111111', pattern: 'solid' },
+    away: { body: '#111111', accent: '#FFFFFF', pattern: 'solid' },
+  },
+  au: {
+    flag: ['#00843D', '#FFCD00', '#012169'],
+    home: { body: '#FFCD00', accent: '#00843D', pattern: 'solid' },
+    away: { body: '#00843D', accent: '#FFCD00', pattern: 'solid' },
+  },
 };
 
 const FALLBACK: NationVisual = {

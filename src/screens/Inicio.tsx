@@ -43,9 +43,11 @@ export function Inicio({ onGoPais }: InicioProps) {
               fontFamily: 'var(--font-heading)',
               textTransform: 'uppercase',
               letterSpacing: 'var(--tracking-widest)',
-              fontSize: 13,
-              color: 'var(--gold-400)',
-              margin: '0 0 8px',
+              fontSize: 17,
+              fontWeight: 700,
+              color: 'var(--gold-500)',
+              textShadow: '0 1px 6px rgba(48,46,43,.65)',
+              margin: '0 0 10px',
             }}
           >
             Camisetas retro de selecciones · 80s, 90s y 00s
@@ -76,7 +78,7 @@ export function Inicio({ onGoPais }: InicioProps) {
             a mano antes de publicarse: sin dropshipping, sin sorpresas de talla.
           </p>
           <Button variant="primary" size="lg" onClick={onGoPais}>
-            Explorar por país
+            Explora todo el catálogo por país
           </Button>
         </div>
       </section>

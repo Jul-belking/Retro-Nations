@@ -1,19 +1,19 @@
-// Checkout como invitado: nombre, email y dirección + pago.
-// Mantiene los datos y la reserva si el pago es rechazado; si la reserva
-// expiró (30 min), muestra el aviso y bloquea el formulario.
+// Checkout: al llegar aquí el usuario ya inició sesión, así que usamos sus
+// datos guardados (nombre, correo, dirección) sin volver a pedirlos.
+// Si la reserva expiró (30 min), muestra el aviso y bloquea el pago.
 
-import type { Buyer, Reservation } from '../lib/store';
-import { Badge, Button, Input, Toast } from '../components/ui';
+import type { Reservation } from '../lib/store';
+import { fullAddress, type PublicAccount } from '../lib/account';
+import { Badge, Button, Toast } from '../components/ui';
 import { Jersey } from '../components/Jersey';
 import { formatCountdown, kitDisplayLabel } from '../lib/format';
 
 interface CheckoutProps {
   reservation: Reservation | null;
-  form: Buyer;
+  user: PublicAccount | null;
   now: number;
   paying: boolean;
   paymentError: boolean;
-  onFormChange: (patch: Partial<Buyer>) => void;
   onPay: () => void;
   onRetry: () => void;
   onBackToDetail: () => void;
@@ -21,18 +21,16 @@ interface CheckoutProps {
 
 export function Checkout({
   reservation,
-  form,
+  user,
   now,
   paying,
   paymentError,
-  onFormChange,
   onPay,
   onRetry,
   onBackToDetail,
 }: CheckoutProps) {
   const reservationExpired = !reservation;
-  const formOk = form.nombre.trim() !== '' && form.email.trim() !== '' && form.direccion.trim() !== '';
-  const canPay = !reservationExpired && formOk && !paying;
+  const canPay = !reservationExpired && !!user && !paying;
 
   return (
     <main
@@ -52,7 +50,7 @@ export function Checkout({
         ← Volver al producto
       </p>
       <div style={{ display: 'flex', gap: 40, flexWrap: 'wrap-reverse' }}>
-        {/* Formulario */}
+        {/* Datos de envío (de la cuenta) */}
         <div style={{ flex: '1 1 380px', minWidth: 300, display: 'flex', flexDirection: 'column', gap: 16 }}>
           <h1
             style={{
@@ -64,7 +62,7 @@ export function Checkout({
               fontWeight: 400,
             }}
           >
-            Datos de envío
+            Confirmar pedido
           </h1>
 
           {reservationExpired ? (
@@ -73,37 +71,33 @@ export function Checkout({
             </Toast>
           ) : (
             <>
-              <Input
-                label="Nombre completo"
-                placeholder="Como en tu documento"
-                value={form.nombre}
-                onChange={(e) => onFormChange({ nombre: e.target.value })}
-              />
-              <Input
-                label="Email"
-                type="email"
-                placeholder="tu@email.com"
-                value={form.email}
-                onChange={(e) => onFormChange({ email: e.target.value })}
-              />
-              <Input
-                label="Dirección de entrega"
-                placeholder="Calle, número, ciudad"
-                value={form.direccion}
-                onChange={(e) => onFormChange({ direccion: e.target.value })}
-              />
+              {user && (
+                <div style={{ background: 'var(--color-surface)', border: '2px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px 18px' }}>
+                  <p style={{ fontFamily: 'var(--font-heading)', textTransform: 'uppercase', fontSize: 12, letterSpacing: 'var(--tracking-wide)', color: 'var(--color-text-muted)', margin: '0 0 10px' }}>
+                    Enviar a
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 600, margin: '0 0 2px', color: 'var(--color-text-primary)' }}>
+                    {`${user.nombre} ${user.apellido}`.trim()}
+                  </p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, margin: '0 0 2px', color: 'var(--color-text-secondary)' }}>{user.email}</p>
+                  <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, margin: 0, color: 'var(--color-text-secondary)' }}>{fullAddress(user)}</p>
+                  {user.telefono && (
+                    <p style={{ fontFamily: 'var(--font-body)', fontSize: 14, margin: '2px 0 0', color: 'var(--color-text-secondary)' }}>{user.telefono}</p>
+                  )}
+                </div>
+              )}
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--color-text-muted)', margin: 0 }}>
-                Solo usamos estos datos para procesar y enviar tu pedido. El pago se gestiona de forma segura —
-                no almacenamos los datos de tu tarjeta.
+                Usamos los datos de tu cuenta para el envío. El pago se gestiona de forma segura — no almacenamos los
+                datos de tu tarjeta.
               </p>
 
               {paymentError && (
                 <Toast variant="error" title="El pago fue rechazado">
-                  No se realizó ningún cargo. Tus datos y tu reserva se mantienen — puedes reintentar.
+                  No se realizó ningún cargo. Tu reserva se mantiene — puedes reintentar.
                 </Toast>
               )}
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginTop: 8 }}>
+              <div style={{ marginTop: 8 }}>
                 {!paymentError ? (
                   <Button variant="primary" size="lg" disabled={!canPay} onClick={onPay}>
                     {paying ? 'Procesando…' : 'Pagar ahora'}
